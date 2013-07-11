@@ -24,9 +24,14 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <time.h>
+#include <string.h>
 
 #if defined(WIN32)
 	#include <Windows.h>
+#endif
+
+#if defined(__linux__)
+	#include <pthread.h>
 #endif
 
 /************************************
@@ -81,6 +86,11 @@ static TdTraceOutput gTraceOutputs[3] = {
 #if defined(WIN32)
 	CRITICAL_SECTION gCritSec;
 	int gCritSecInitialized = 0;
+#endif
+
+#if defined(__linux__)
+	pthread_mutex_t gMutex;
+	int gMutexInitialized = 0;
 #endif
 
 /************************************
@@ -150,7 +160,9 @@ enum TdError td_setConsoleColor(int color, enum TdColorType type){
 	rc = SetConsoleTextAttribute(stdoutHandle, attribs);
 
 	return rc ? eTD_NO_ERROR : eTD_ERROR;
-
+#elif defined(__linux__)
+	// TODO
+	return eTD_NO_ERROR;
 #else
 	// TODO imlement this on unix
 	#error Not implemented on this platform
@@ -247,7 +259,7 @@ enum TdError td_logMessage(const tdchar* tag, enum TdTraceLevel level, const tdc
 
 			// Message line
 			td_setColor(levelColor | (level != eTD_LVL_VERBOSE ? TD_COLOR_INTENSE : 0), TD_COLOR_BLACK);
-			td_printf(linePtr);
+			td_printf(TD_STR_FMT, linePtr);
 
 			td_printf(TD_TEXT("\r\n"));
 
@@ -313,6 +325,13 @@ void td_lock(){
 	}
 
 	EnterCriticalSection(&gCritSec);
+#elif defined(__linux__)
+	if(!gMutexInitialized){
+		pthread_mutex_init(&gMutex, NULL);
+		gMutexInitialized = 1;
+	}
+
+	pthread_mutex_lock(&gMutex);
 #else
 	// TODO
 	#error Not implemented on this platform
@@ -323,6 +342,8 @@ void td_lock(){
 void td_unlock(){
 #if defined(WIN32)
 	LeaveCriticalSection(&gCritSec);
+#elif defined(__linux__)
+	pthread_mutex_unlock(&gMutex);
 #else
 	// TODO
 	#error Not implemented on this platform
