@@ -1,3 +1,21 @@
+/**
+ * @file
+ * @author Nikola Spiric <nikola.spiric.ns@gmail.com>
+ *
+ * @section LICENSE
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 2 of
+ * the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details at
+ * http://www.gnu.org/copyleft/gpl.html
+ */
+
 /************************************
 ************* Includes **************
 *************************************/
@@ -241,6 +259,7 @@ enum TdError td_logMessage(const tdchar* tag, enum TdTraceLevel level, const tdc
 		// File output
 		if(gTraceOutputs[eTD_OUTPUT_FILE].enabled && gTraceOutputs[eTD_OUTPUT_CONSOLE].level <= level && gOutputFile){
 			if(gFileOutputType == eTD_FILE_HTML){
+				// HTML output
 				tdchar htmlColor[7];
 				htmlColor[6] = 0;
 				td_getHTMLColor(levelColor, htmlColor);
@@ -256,16 +275,11 @@ enum TdError td_logMessage(const tdchar* tag, enum TdTraceLevel level, const tdc
 					timeStamp, htmlColor, levelStr, tag, message);
 			}
 			else{
+				// Plain text output
 				td_fprintf(gOutputFile, TD_TEXT("[%s ") TD_STR_FMT TD_TEXT(" ]: ") TD_STR_FMT TD_TEXT("\r\n"), timeStamp, levelStr, linePtr);
 			}
 
-			
-			
-
-			if(gFileOutputType == eTD_FILE_HTML){
-				td_fprintf(gOutputFile, TD_TEXT("</font></p>"));
-			}
-
+			// Flush the file output after every log either way
 			fflush(gOutputFile);
 		}
 
