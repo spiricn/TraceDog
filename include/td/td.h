@@ -7,11 +7,24 @@
 extern "C"{
 #endif
 
+/**
+ * Helper macros used to create a wide versions of __FILE__ and __FUNCTION__
+ */
+#define TD_WIDEN2(x)  L ## x
+#define TD_WIDEN(x) TD_WIDEN2(x)
+
 #ifdef TD_UNICODE
 	typedef wchar_t tdchar;
+	#define TD_TEXT(s) L ## s
+	#define TD_FILE TD_WIDEN(__FILE__)
+	#define TD_FUNCTION TD_WIDEN(__FUNCTION__)
 #else
 	typedef char tdchar;
+	#define TD_TEXT(s) s
+	#define TD_FILE __FILE__
+	#define TD_FUNCTION __FUNCTION__
 #endif
+
 
 enum TdError {
 	eTD_NO_ERROR = 0x00,
@@ -37,6 +50,14 @@ enum TdTraceOutputId{
 	eTD_OUTPUT_USER = 0x2
 }; // </TdTraceOutputId>
 
+enum TdFileOutputType{
+	eTD_FILE_PLAIN_TEXT,
+	eTD_FILE_HTML
+}; // </TdFileOutputType>
+
+/**
+ * Color bitfields. Entire color related information can be incoded in a single niblet.
+ */
 #define	TD_COLOR_RED		( 0x04 )
 #define	TD_COLOR_GREEN		( 0x02 )
 #define	TD_COLOR_BLUE		( 0x01 )
@@ -47,6 +68,7 @@ enum TdTraceOutputId{
 #define	TD_COLOR_BLACK		( 0x00 )
 #define TD_COLOR_INTENSE	( 0x08 )
 
+/** User callback function. */
 typedef void (*td_callbackFcn)(const tdchar* tag, enum TdTraceLevel level, const tdchar* message);
 
 /**
@@ -71,6 +93,8 @@ void td_setCallbackFnc(td_callbackFcn fnc);
 
 /**
  * Sets file destination for eTD_OUTPUT_FILE trace output.
+ *
+ * If the file output type is HTML and 'output' param is NULL a HTML trailer shall be written.
  *
  * @param output - File output pointer, can be NULL which disables this trace output
  */
@@ -97,6 +121,18 @@ void td_setOutputLevel(enum TdTraceOutputId id, enum TdTraceLevel level);
  */
 void td_setOutputEnabled(enum TdTraceOutputId id, int enabled);
 
+/**
+ * Changes file output format.
+ * If the output file is already set, and 'type' param is HTML a HTML header will be written
+ *
+ * @param type - Can be either plain text or formatted HTML.
+ */
+void td_setFileOutputType(enum TdFileOutputType type);
+
+
+/**
+ * Basic log helper macros removing the need to call 'td_logMessage' directly.
+  */
 #ifndef TD_DISABLED
 	#define LOGV(fmt, ...) do{ td_logMessage(TD_TRACE_TAG, eTD_LVL_VERBOSE, fmt, ##__VA_ARGS__); }while(0)
 	#define LOGD(fmt, ...) do{ td_logMessage(TD_TRACE_TAG, eTD_LVL_DEBUG, fmt, ##__VA_ARGS__); }while(0)
@@ -111,20 +147,27 @@ void td_setOutputEnabled(enum TdTraceOutputId id, int enabled);
 	#define LOGE(fmt, ...)
 #endif
 
+/**
+ * Tracer macros, extended LOGx macros with file, function and line information.
+ */
+#define TD_TRACE_INFO  TD_TEXT("{") TD_FILE TD_TEXT(" - ") TD_FUNCTION TD_TEXT(" @ %d } ")
 
+#define TRACEV(fmt, ...) LOGV(TD_TRACE_INFO fmt, __LINE__, __VA_ARGS__)
+#define TRACED(fmt, ...) LOGD(TD_TRACE_INFO fmt, __LINE__, __VA_ARGS__)
+#define TRACEI(fmt, ...) LOGI(TD_TRACE_INFO fmt, __LINE__, __VA_ARGS__)
+#define TRACEW(fmt, ...) LOGW(TD_TRACE_INFO fmt, __LINE__, __VA_ARGS__)
+#define TRACEE(fmt, ...) LOGE(TD_TRACE_INFO fmt, __LINE__, __VA_ARGS__)
 
-#define TRACEV(fmt, ...) LOGV( "{" __FILE__ " - " __FUNCTION__ " @ %d } " fmt, __LINE__, __VA_ARGS__)
-#define TRACED(fmt, ...) LOGD( "{" __FILE__ " - " __FUNCTION__ " @ %d } " fmt, __LINE__, __VA_ARGS__)
-#define TRACEI(fmt, ...) LOGI( "{" __FILE__ " - " __FUNCTION__ " @ %d } " fmt, __LINE__, __VA_ARGS__)
-#define TRACEW(fmt, ...) LOGW( "{" __FILE__ " - " __FUNCTION__ " @ %d } " fmt, __LINE__, __VA_ARGS__)
-#define TRACEE(fmt, ...) LOGE( "{" __FILE__ " - " __FUNCTION__ " @ %d } " fmt, __LINE__, __VA_ARGS__)
-
-#define TD_ASSERT(val, fmt, ...) do{ if(!(val)){ TRACEE("Assertion failed: \"" fmt "\"", ##__VA_ARGS__); abort();} }while(0)
+/**
+ * Assert related macros
+ */
+#define TD_ASSERT(val, fmt, ...) do{ if(!(val)){ TRACEE(TD_TEXT("Assertion failed: \"") fmt TD_TEXT("\""), ##__VA_ARGS__); abort();} }while(0)
 #define TD_ASSERT_LT(val1, val2, fmt, ...) TD_ASSERT(val1 < val2, fmt, __VA_ARGS__)
 #define TD_ASSERT_LTE(val1, val2, fmt, ...) TD_ASSERT(val1 <= val2, fmt, __VA_ARGS__)
 #define TD_ASSERT_GT(val1, val2, fmt, ...) TD_ASSERT(val1 > val2, fmt, __VA_ARGS__)
 #define TD_ASSERT_GTE(val1, val2, fmt, ...) TD_ASSERT(val1 >= val2, fmt, __VA_ARGS__)
 
+/** Default trace tag */
 #ifndef TD_TRACE_TAG
 	#define TD_TRACE_TAG ("")
 #endif
