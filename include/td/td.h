@@ -168,13 +168,13 @@ void td_setFileOutputType(enum TdFileOutputType type);
 /**
  * Tracer macros, extended LOGx macros with file, function and line information.
  */
-#define TD_TRACE_INFO  TD_TEXT("{") TD_FILE TD_TEXT(" - ") TD_FUNCTION TD_TEXT(" @ %d } ")
+#define TD_TRACE_INFO  TD_TEXT("{%s - %s @ %d} ")
 
-#define TRACEV(fmt, ...) LOGV(TD_TRACE_INFO fmt, __LINE__, __VA_ARGS__)
-#define TRACED(fmt, ...) LOGD(TD_TRACE_INFO fmt, __LINE__, __VA_ARGS__)
-#define TRACEI(fmt, ...) LOGI(TD_TRACE_INFO fmt, __LINE__, __VA_ARGS__)
-#define TRACEW(fmt, ...) LOGW(TD_TRACE_INFO fmt, __LINE__, __VA_ARGS__)
-#define TRACEE(fmt, ...) LOGE(TD_TRACE_INFO fmt, __LINE__, __VA_ARGS__)
+#define TRACEV(fmt, ...) LOGV(TD_TRACE_INFO fmt, TD_FILE, TD_FUNCTION, __LINE__, ## __VA_ARGS__)
+#define TRACED(fmt, ...) LOGD(TD_TRACE_INFO fmt, TD_FILE, TD_FUNCTION, __LINE__, ## __VA_ARGS__)
+#define TRACEI(fmt, ...) LOGI(TD_TRACE_INFO fmt, TD_FILE, TD_FUNCTION, __LINE__, ## __VA_ARGS__)
+#define TRACEW(fmt, ...) LOGW(TD_TRACE_INFO fmt, TD_FILE, TD_FUNCTION, __LINE__, ## __VA_ARGS__)
+#define TRACEE(fmt, ...) LOGE(TD_TRACE_INFO fmt, TD_FILE, TD_FUNCTION, __LINE__, ## __VA_ARGS__)
 
 /**
  * Assert related macros
