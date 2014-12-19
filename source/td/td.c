@@ -296,7 +296,7 @@ enum TdError td_logMessage(const tdchar* tag, enum TdTraceLevel level, const tdc
 		}
 
 		// Next line
-		linePtr = td_strtok(NULL, TEXT("\n"));
+		linePtr = td_strtok(NULL, TD_TEXT("\n"));
 	}
 
 	td_unlock();
