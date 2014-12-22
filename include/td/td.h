@@ -77,15 +77,16 @@ enum TdFileOutputType{
 /**
  * Color bitfields. Entire color related information can be incoded in a single niblet.
  */
-#define	TD_COLOR_RED		( 0x04 )
-#define	TD_COLOR_GREEN		( 0x02 )
-#define	TD_COLOR_BLUE		( 0x01 )
-#define	TD_COLOR_CYAN		( TD_COLOR_BLUE | TD_COLOR_GREEN )
-#define	TD_COLOR_MAGENTA	( TD_COLOR_RED | TD_COLOR_BLUE )
-#define	TD_COLOR_YELLOW		( TD_COLOR_GREEN | TD_COLOR_RED )
-#define	TD_COLOR_WHITE		( TD_COLOR_RED | TD_COLOR_GREEN | TD_COLOR_BLUE )
-#define	TD_COLOR_BLACK		( 0x00 )
-#define TD_COLOR_INTENSE	( 0x08 )
+enum TdColor{
+	eTD_COLOR_RED,
+	eTD_COLOR_GREEN,
+	eTD_COLOR_BLUE,
+	eTD_COLOR_CYAN,
+	eTD_COLOR_MAGENTA,
+	eTD_COLOR_YELLOW,
+	eTD_COLOR_WHITE,
+	eTD_COLOR_BLACK,
+};
 
 /** User callback function. */
 typedef void (*td_callbackFcn)(const tdchar* tag, enum TdTraceLevel level, const tdchar* message);

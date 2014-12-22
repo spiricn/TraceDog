@@ -60,6 +60,17 @@
 
 #define LOG_BUFFER_SIZE ( 1024 )
 
+#if defined(WIN32)
+#define	WIN32_COLOR_RED		( 0x04 )
+#define	WIN32_COLOR_GREEN		( 0x02 )
+#define	WIN32_COLOR_BLUE		( 0x01 )
+#define	WIN32_COLOR_CYAN		( WIN32_COLOR_BLUE | WIN32_COLOR_GREEN )
+#define	WIN32_COLOR_MAGENTA	( WIN32_COLOR_RED | WIN32_COLOR_BLUE )
+#define	WIN32_COLOR_YELLOW		( WIN32_COLOR_GREEN | WIN32_COLOR_RED )
+#define	WIN32_COLOR_WHITE		( WIN32_COLOR_RED | WIN32_COLOR_GREEN | WIN32_COLOR_BLUE )
+#define	WIN32_COLOR_BLACK		( 0x00 )
+#define WIN32_COLOR_INTENSE	( 0x08 )
+#endif
 
 /************************************
 ********* Global variables **********
@@ -97,9 +108,9 @@ static TdTraceOutput gTraceOutputs[3] = {
 ******* Function declarations *******
 *************************************/
 
-static enum TdError td_setConsoleColor(int color, enum TdColorType type);
+static enum TdError td_setConsoleColor(enum TdColor color, enum TdColorType type, int bold);
 
-static enum TdError td_setColor(int textColor, int backgroundColor);
+static enum TdError td_setColor(enum TdColor textColor, int textBold, enum TdColor backgroundColor, int backgroundBold);
 
 static void td_getCurrentTime(const char* format, tdchar* result);
 
@@ -107,7 +118,7 @@ static void td_lock();
 
 static void td_unlock();
 
-static void td_getHTMLColor(int color, char res[7]);
+static void td_getHTMLColor(enum TdColor color, char res[7]);
 
 /************************************
 ********* Function definitions ******
@@ -131,7 +142,7 @@ void td_getCurrentTime(const char* format, tdchar* result){
 #endif
 }
 
-enum TdError td_setConsoleColor(int color, enum TdColorType type){
+enum TdError td_setConsoleColor(enum TdColor color, enum TdColorType type, int bold){
 #if defined(WIN32)	
 	BOOL rc = FALSE;
 	WORD attribs = 0;
@@ -145,16 +156,48 @@ enum TdError td_setConsoleColor(int color, enum TdColorType type){
 	}
 
 	// First niblet holds the information about foreground color (RGBI) while the second
-	// one holds the information about backgorund
+	// one holds the information about background
 	attribs = info.wAttributes;
+
+	int colorCode = 0;
+
+	if(color == eTD_COLOR_RED){
+		color = WIN32_COLOR_RED;
+	}
+	else if(color == eTD_COLOR_GREEN){
+		color = WIN32_COLOR_RED;
+	}
+	else if(color == eTD_COLOR_BLUE){
+		color = WIN32_COLOR_RED;
+	}
+	else if(color == eTD_COLOR_CYAN){
+		color = WIN32_COLOR_RED;
+	}
+	else if(color == eTD_COLOR_MAGENTA){
+		color = WIN32_COLOR_RED;
+	}
+	else if(color == eTD_COLOR_YELLOW){
+		color = WIN32_COLOR_RED;
+	}
+	else if(color == eTD_COLOR_WHITE){
+		color = WIN32_COLOR_RED;
+	}
+	else if(color == eTD_COLOR_BLACK){
+		color = WIN32_COLOR_RED;
+	}
+
+	if(bold){
+		color |= WIN32_COLOR_INTENSE;
+
+	}
 
 	if(type == eTD_COLOR_BACKGROUND){
 		attribs &= 0xFFFF00FF;
-		attribs |= (WORD)((color & 0xF) << 4);
+		attribs |= (WORD)((colorCode & 0xF) << 4);
 	}
 	else{
 		attribs &= 0xFFFFFF00;
-		attribs |= (WORD)(color & 0xF );
+		attribs |= (WORD)(colorCode & 0xF );
 	}
 
 	rc = SetConsoleTextAttribute(stdoutHandle, attribs);
@@ -177,15 +220,15 @@ void td_setOutputEnabled(enum TdTraceOutputId id, int enabled){
 	gTraceOutputs[id].enabled = enabled;
 }
 
-enum TdError td_setColor(int textColor, int backgroundColor){
+enum TdError td_setColor(enum TdColor textColor, int textBold, enum TdColor backgroundColor, int backgroundBold){
 	enum TdError rc = eTD_NO_ERROR;
 
-	rc = td_setConsoleColor(textColor, eTD_COLOR_FOREGROUND);
+	rc = td_setConsoleColor(textColor, eTD_COLOR_FOREGROUND, textBold);
 	if(rc){
 		return rc;
 	}
 
-	rc = td_setConsoleColor(backgroundColor, eTD_COLOR_BACKGROUND);
+	rc = td_setConsoleColor(backgroundColor, eTD_COLOR_BACKGROUND, backgroundBold);
 	if(rc){
 		return rc;
 	}
@@ -215,7 +258,7 @@ enum TdError td_logMessage(const tdchar* tag, enum TdTraceLevel level, const tdc
 	va_list argList;
 
 	// Color associated with the given trace level
-	int levelColor = level == eTD_LVL_DEBUG || level == eTD_LVL_VERBOSE ? TD_COLOR_WHITE : level == eTD_LVL_INFO ? TD_COLOR_GREEN : level == eTD_LVL_WARNING ? TD_COLOR_YELLOW : level == eTD_LVL_ERROR ? TD_COLOR_RED : TD_COLOR_WHITE;
+	int levelColor = level == eTD_LVL_DEBUG || level == eTD_LVL_VERBOSE ? eTD_COLOR_WHITE : level == eTD_LVL_INFO ? eTD_COLOR_GREEN : level == eTD_LVL_WARNING ? eTD_COLOR_YELLOW : level == eTD_LVL_ERROR ? eTD_COLOR_RED : eTD_COLOR_WHITE;
 
 	// Symbol representing the level (e.g. D for eTD_LVL_DEBUG)
 	tdchar levelSymbol = level == eTD_LVL_DEBUG ? 'D' : level == eTD_LVL_VERBOSE ? 'V' : level == eTD_LVL_INFO ? 'I' : level == eTD_LVL_WARNING ? 'W' : level == eTD_LVL_ERROR ? 'E' : '?';
@@ -250,22 +293,22 @@ enum TdError td_logMessage(const tdchar* tag, enum TdTraceLevel level, const tdc
 			td_printf(TD_TEXT("[") TD_STR_FMT TD_TEXT(" "), timeStamp);
 
 			// Log level
-			td_setColor(TD_COLOR_WHITE | TD_COLOR_INTENSE, levelColor);
+			td_setColor(eTD_COLOR_WHITE, 1, levelColor, 0);
 			td_printf(TD_TEXT(" ") TD_STR_FMT TD_TEXT(" "), levelStr);
 
 			// Log tag
-			td_setColor(TD_COLOR_WHITE, TD_COLOR_BLACK);
+			td_setColor(eTD_COLOR_WHITE, 0, eTD_COLOR_BLACK, 0);
 			td_printf(TD_TEXT(" ") TD_STR_FMT TD_TEXT("]: "), tag);
 
 			// Message line
-			td_setColor(levelColor | (level != eTD_LVL_VERBOSE ? TD_COLOR_INTENSE : 0), TD_COLOR_BLACK);
+			td_setColor(levelColor,  level != eTD_LVL_VERBOSE ? 1: 0, eTD_COLOR_BLACK, 0);
 			td_printf(TD_STR_FMT, linePtr);
 
 			td_printf(TD_TEXT("\r\n"));
 
 			// Restore console color to default
 			// TODO restore the actual saved state instead of white/black
-			td_setColor(TD_COLOR_WHITE, TD_COLOR_BLACK);
+			td_setColor(eTD_COLOR_WHITE, 0, eTD_COLOR_BLACK, 0);
 		}
 
 		// File output
@@ -351,16 +394,16 @@ void td_unlock(){
 }
 
 
-void td_getHTMLColor(int color, tdchar res[7]){
+void td_getHTMLColor(enum TdColor color, tdchar res[7]){
 	// Red
-	res[0] = color & TD_COLOR_RED ? 'F' : '0';
-	res[1] = color & TD_COLOR_RED ? 'F' : '0';
+	res[0] = color == eTD_COLOR_RED ? 'F' : '0';
+	res[1] = color == eTD_COLOR_RED ? 'F' : '0';
 
 	// Green
-	res[2] = color & TD_COLOR_GREEN ? 'F' : '0';
-	res[3] = color & TD_COLOR_GREEN ? 'F' : '0';
+	res[2] = color == eTD_COLOR_GREEN ? 'F' : '0';
+	res[3] = color == eTD_COLOR_GREEN ? 'F' : '0';
 
 	// Blue
-	res[4] = color & TD_COLOR_BLUE ? 'F' : '0';
-	res[5] = color & TD_COLOR_BLUE ? 'F' : '0';
+	res[4] = color == eTD_COLOR_BLUE ? 'F' : '0';
+	res[5] = color == eTD_COLOR_BLUE ? 'F' : '0';
 }
