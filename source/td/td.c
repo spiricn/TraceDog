@@ -73,17 +73,27 @@
 #endif
 
 #if defined(__linux__)
-#define ANSI_COLOR_RED     "\x1b[31m"
-#define ANSI_COLOR_GREEN   "\x1b[32m"
-#define ANSI_COLOR_YELLOW  "\x1b[33m"
-#define ANSI_COLOR_BLUE    "\x1b[34m"
-#define ANSI_COLOR_MAGENTA "\x1b[35m"
-#define ANSI_COLOR_CYAN    "\x1b[36m"
-#define ANSI_COLOR_RESET   "\x1b[0m"
 
-#define SET_ANSI_COLOR(color) do{\
-	fprintf(stdout, color); \
-} while(0)
+#define ANSI_CLR_RESET "\x1b[0m"
+
+#define ANSI_CLR_FG_RED "31"
+#define ANSI_CLR_FG_GREEN "32"
+#define ANSI_CLR_FG_BLUE "34"
+#define ANSI_CLR_FG_CYAN "36"
+#define ANSI_CLR_FG_MAGENTA "35"
+#define ANSI_CLR_FG_YELLOW "33"
+#define ANSI_CLR_FG_WHITE "37"
+#define ANSI_CLR_FG_BLACK "30"
+
+#define ANSI_CLR_BG_RED "41"
+#define ANSI_CLR_BG_GREEN "42"
+#define ANSI_CLR_BG_BLUE "44"
+#define ANSI_CLR_BG_CYAN "46"
+#define ANSI_CLR_BG_MAGENTA "45"
+#define ANSI_CLR_BG_YELLOW "43"
+#define ANSI_CLR_BG_WHITE "47"
+#define ANSI_CLR_BG_BLACK "40"
+
 
 #endif
 
@@ -122,6 +132,8 @@ static TdTraceOutput gTraceOutputs[3] = {
 /************************************
 ******* Function declarations *******
 *************************************/
+
+static void td_outputANSIColor(enum TdColor color, enum TdColorType type, int intense);
 
 static enum TdError td_setConsoleColor(enum TdColor color, enum TdColorType type, int bold);
 
@@ -219,9 +231,7 @@ enum TdError td_setConsoleColor(enum TdColor color, enum TdColorType type, int b
 
 	return rc ? eTD_NO_ERROR : eTD_ERROR;
 #elif defined(__linux__)
-	// TODO
-	SET_ANSI_COLOR(ANSI_COLOR_RED);
-
+	td_outputANSIColor(color, type, bold);
 	return eTD_NO_ERROR;
 #else
 	// TODO imlement this on unix
@@ -324,8 +334,12 @@ enum TdError td_logMessage(const tdchar* tag, enum TdTraceLevel level, const tdc
 			td_printf(TD_TEXT("\r\n"));
 
 			// Restore console color to default
+#if defined(WIN32)
 			// TODO restore the actual saved state instead of white/black
 			td_setColor(eTD_COLOR_WHITE, 0, eTD_COLOR_BLACK, 0);
+#else
+			fprintf(stdout, ANSI_CLR_RESET);
+#endif
 		}
 
 		// File output
@@ -423,4 +437,42 @@ void td_getHTMLColor(enum TdColor color, tdchar res[7]){
 	// Blue
 	res[4] = color == eTD_COLOR_BLUE ? 'F' : '0';
 	res[5] = color == eTD_COLOR_BLUE ? 'F' : '0';
+}
+
+static void td_outputANSIColor(enum TdColor color, enum TdColorType type, int intense){
+	char code[64] = "\x1b[";
+
+	if(color == eTD_COLOR_RED){
+		strcat(code, type == eTD_COLOR_FOREGROUND ? ANSI_CLR_FG_RED : ANSI_CLR_BG_RED);
+	}
+	else if(color == eTD_COLOR_GREEN){
+		strcat(code, type == eTD_COLOR_FOREGROUND ? ANSI_CLR_FG_GREEN : ANSI_CLR_BG_GREEN);
+	}
+	else if(color == eTD_COLOR_BLUE){
+		strcat(code, type == eTD_COLOR_FOREGROUND ? ANSI_CLR_FG_BLUE : ANSI_CLR_BG_BLUE);
+	}
+	else if(color == eTD_COLOR_CYAN){
+		strcat(code, type == eTD_COLOR_FOREGROUND ? ANSI_CLR_FG_CYAN : ANSI_CLR_BG_CYAN);
+	}
+	else if(color == eTD_COLOR_MAGENTA){
+		strcat(code, type == eTD_COLOR_FOREGROUND ? ANSI_CLR_FG_MAGENTA : ANSI_CLR_BG_MAGENTA);
+	}
+	else if(color == eTD_COLOR_YELLOW){
+		strcat(code, type == eTD_COLOR_FOREGROUND ? ANSI_CLR_FG_YELLOW : ANSI_CLR_BG_YELLOW);
+	}
+	else if(color == eTD_COLOR_WHITE){
+		strcat(code, type == eTD_COLOR_FOREGROUND ? ANSI_CLR_FG_WHITE : ANSI_CLR_BG_WHITE);
+	}
+	else if(color == eTD_COLOR_BLACK){
+		strcat(code, type == eTD_COLOR_FOREGROUND ? ANSI_CLR_FG_BLACK : ANSI_CLR_BG_BLACK);
+	}
+
+	if(intense){
+		strcat(code, ";1m");
+	}
+	else{
+		strcat(code, "m");
+	}
+
+	fprintf(stdout, code);
 }
