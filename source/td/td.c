@@ -164,8 +164,6 @@ static void td_lock();
 
 static void td_unlock();
 
-static void td_getHTMLColor(TdColor color, char res[7]);
-
 /************************************
 ********* Function definitions ******
 *************************************/
@@ -269,6 +267,8 @@ void td_setOutputEnabled(TdTraceOutputId id, int enabled){
 TdError td_setColor(TdColor textColor, int textBold, TdColor backgroundColor, int backgroundBold){
 	TdError rc = eTD_NO_ERROR;
 
+	fprintf(stdout, ANSI_CLR_RESET);
+
 	rc = td_setConsoleColor(textColor, eTD_COLOR_FOREGROUND, textBold);
 	if(rc){
 		return rc;
@@ -330,6 +330,7 @@ TdError td_logMessage(const tdchar* tag, TdTraceLevel level, const tdchar* fmt, 
 		// Console output
 		if(gTraceOutputs[eTD_OUTPUT_CONSOLE].enabled && gTraceOutputs[eTD_OUTPUT_CONSOLE].level <= level){
 			// Timestamp
+			td_setColor(eTD_COLOR_WHITE, 0, eTD_COLOR_BLACK, 0);
 			td_printf(TD_TEXT("[") TD_STR_FMT TD_TEXT(" "), timeStamp);
 
 			// Log level
