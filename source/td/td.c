@@ -37,6 +37,7 @@
 /************************************
 ************* Defines ***************
 *************************************/
+
 #ifdef TD_UNICODE
 	#define td_printf wprintf
 	#define td_fprintf fwprintf
@@ -98,20 +99,38 @@
 #endif
 
 /************************************
+************* Typedefs **************
+*************************************/
+
+typedef enum TdColorType_t {
+	eTD_COLOR_BACKGROUND,
+	eTD_COLOR_FOREGROUND,
+} TdColorType; // </TdColorType>
+
+typedef enum TdColor_t {
+	eTD_COLOR_RED,
+	eTD_COLOR_GREEN,
+	eTD_COLOR_BLUE,
+	eTD_COLOR_CYAN,
+	eTD_COLOR_MAGENTA,
+	eTD_COLOR_YELLOW,
+	eTD_COLOR_WHITE,
+	eTD_COLOR_BLACK,
+} TdColor; // </TdColor>
+
+/************************************
 ********* Global variables **********
 *************************************/
 
 typedef struct{
-	enum TdTraceOutputId id;
-	enum TdTraceLevel level;
+	TdTraceOutputId id;
+	TdTraceLevel level;
 	int enabled;
 } TdTraceOutput;
 
 static td_callbackFcn gCallbackFnc = NULL;
 
 static FILE* gOutputFile = NULL;
-
-enum TdFileOutputType gFileOutputType = eTD_FILE_HTML;
 
 static TdTraceOutput gTraceOutputs[3] = {
 	{eTD_OUTPUT_CONSOLE,	eTD_LVL_VERBOSE, 1},
@@ -133,11 +152,11 @@ static TdTraceOutput gTraceOutputs[3] = {
 ******* Function declarations *******
 *************************************/
 
-static void td_outputANSIColor(enum TdColor color, enum TdColorType type, int intense);
+static void td_outputANSIColor(TdColor color, TdColorType type, int intense);
 
-static enum TdError td_setConsoleColor(enum TdColor color, enum TdColorType type, int bold);
+static TdError td_setConsoleColor(TdColor color, TdColorType type, int bold);
 
-static enum TdError td_setColor(enum TdColor textColor, int textBold, enum TdColor backgroundColor, int backgroundBold);
+static TdError td_setColor(TdColor textColor, int textBold, TdColor backgroundColor, int backgroundBold);
 
 static void td_getCurrentTime(const char* format, tdchar* result);
 
@@ -145,7 +164,7 @@ static void td_lock();
 
 static void td_unlock();
 
-static void td_getHTMLColor(enum TdColor color, char res[7]);
+static void td_getHTMLColor(TdColor color, char res[7]);
 
 /************************************
 ********* Function definitions ******
@@ -169,7 +188,7 @@ void td_getCurrentTime(const char* format, tdchar* result){
 #endif
 }
 
-enum TdError td_setConsoleColor(enum TdColor color, enum TdColorType type, int bold){
+TdError td_setConsoleColor(TdColor color, TdColorType type, int bold){
 #if defined(WIN32)	
 	BOOL rc = FALSE;
 	WORD attribs = 0;
@@ -239,16 +258,16 @@ enum TdError td_setConsoleColor(enum TdColor color, enum TdColorType type, int b
 #endif
 }
 
-void td_setOutputLevel(enum TdTraceOutputId id, enum TdTraceLevel level){
+void td_setOutputLevel(TdTraceOutputId id, TdTraceLevel level){
 	gTraceOutputs[id].level = level;
 }
 
-void td_setOutputEnabled(enum TdTraceOutputId id, int enabled){
+void td_setOutputEnabled(TdTraceOutputId id, int enabled){
 	gTraceOutputs[id].enabled = enabled;
 }
 
-enum TdError td_setColor(enum TdColor textColor, int textBold, enum TdColor backgroundColor, int backgroundBold){
-	enum TdError rc = eTD_NO_ERROR;
+TdError td_setColor(TdColor textColor, int textBold, TdColor backgroundColor, int backgroundBold){
+	TdError rc = eTD_NO_ERROR;
 
 	rc = td_setConsoleColor(textColor, eTD_COLOR_FOREGROUND, textBold);
 	if(rc){
@@ -268,16 +287,10 @@ void td_setCallbackFnc(td_callbackFcn fnc){
 }
 
 void td_setFileOutput(FILE* output){
-	if(output == NULL && gOutputFile && gFileOutputType == eTD_FILE_HTML){
-		// Write HTML trailer
-		td_fprintf(gOutputFile, 
-			TD_TEXT( "\n</table>\n</body>\n</html>\n"));
-	}
-
 	gOutputFile = output;
 }
 
-enum TdError td_logMessage(const tdchar* tag, enum TdTraceLevel level, const tdchar* fmt, ...){
+TdError td_logMessage(const tdchar* tag, TdTraceLevel level, const tdchar* fmt, ...){
 	tdchar timeStamp[64];
 	tdchar message[LOG_BUFFER_SIZE];
 	tdchar* linePtr = NULL;
@@ -344,28 +357,10 @@ enum TdError td_logMessage(const tdchar* tag, enum TdTraceLevel level, const tdc
 
 		// File output
 		if(gTraceOutputs[eTD_OUTPUT_FILE].enabled && gTraceOutputs[eTD_OUTPUT_CONSOLE].level <= level && gOutputFile){
-			if(gFileOutputType == eTD_FILE_HTML){
-				// HTML output
-				tdchar htmlColor[7];
-				htmlColor[6] = 0;
-				td_getHTMLColor(levelColor, htmlColor);
+			// Plain text output
+			td_fprintf(gOutputFile, TD_TEXT("[%s ") TD_STR_FMT TD_TEXT(" ]: ") TD_STR_FMT TD_TEXT("\r\n"), timeStamp, levelStr, linePtr);
 
-				
-				td_fprintf(gOutputFile,
-					TD_TEXT("<tr>\n") // start of row
-					TD_TEXT("<td>") TD_STR_FMT TD_TEXT("</td>\n") // timestamp
-					TD_TEXT("<td> <font color=\"") TD_STR_FMT TD_TEXT("\">") TD_STR_FMT TD_TEXT("</font> </td>\n")// level
-					TD_TEXT("<td>") TD_STR_FMT TD_TEXT("</td>\n") // tag
-					TD_TEXT("<td>") TD_STR_FMT TD_TEXT("</td>\n") // message
-					TD_TEXT("</tr>\n"), // end of row
-					timeStamp, htmlColor, levelStr, tag, message);
-			}
-			else{
-				// Plain text output
-				td_fprintf(gOutputFile, TD_TEXT("[%s ") TD_STR_FMT TD_TEXT(" ]: ") TD_STR_FMT TD_TEXT("\r\n"), timeStamp, levelStr, linePtr);
-			}
-
-			// Flush the file output after every log either way
+			// Flush the file output after every log
 			fflush(gOutputFile);
 		}
 
@@ -376,19 +371,6 @@ enum TdError td_logMessage(const tdchar* tag, enum TdTraceLevel level, const tdc
 	td_unlock();
 
 	return eTD_NO_ERROR;
-}
-
-void td_setFileOutputType(enum TdFileOutputType type){
-	gFileOutputType = type;
-	if(gOutputFile && type == eTD_FILE_HTML){
-		// TODO set file encoding for unicode, the browser is having some trouble reading
-		// the current version of this when TD_UNICODE is set
-		td_fprintf(gOutputFile, 
-			TD_TEXT("<html>\n")
-			TD_TEXT("<body text=\"white\">\n")
-			TD_TEXT("<table border=1 bgcolor=\"#000000\">\n")
-		);
-	}
 }
 
 void td_lock(){
@@ -412,7 +394,6 @@ void td_lock(){
 #endif
 }
 
-
 void td_unlock(){
 #if defined(WIN32)
 	LeaveCriticalSection(&gCritSec);
@@ -424,22 +405,7 @@ void td_unlock(){
 #endif
 }
 
-
-void td_getHTMLColor(enum TdColor color, tdchar res[7]){
-	// Red
-	res[0] = color == eTD_COLOR_RED ? 'F' : '0';
-	res[1] = color == eTD_COLOR_RED ? 'F' : '0';
-
-	// Green
-	res[2] = color == eTD_COLOR_GREEN ? 'F' : '0';
-	res[3] = color == eTD_COLOR_GREEN ? 'F' : '0';
-
-	// Blue
-	res[4] = color == eTD_COLOR_BLUE ? 'F' : '0';
-	res[5] = color == eTD_COLOR_BLUE ? 'F' : '0';
-}
-
-static void td_outputANSIColor(enum TdColor color, enum TdColorType type, int intense){
+static void td_outputANSIColor(TdColor color, TdColorType type, int intense){
 	char code[64] = "\x1b[";
 
 	if(color == eTD_COLOR_RED){
@@ -474,5 +440,5 @@ static void td_outputANSIColor(enum TdColor color, enum TdColorType type, int in
 		strcat(code, "m");
 	}
 
-	fprintf(stdout, code);
+	fprintf(stdout, "%s", code);
 }

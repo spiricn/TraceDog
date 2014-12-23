@@ -20,6 +20,7 @@
 
 #include "td/td.h"
 
+#undef TD_TRACE_TAG
 #define TD_TRACE_TAG ( TD_TEXT("ModuleTag") )
 
 

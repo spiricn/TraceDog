@@ -44,52 +44,28 @@ extern "C"{
 	#define TD_FUNCTION __FUNCTION__
 #endif
 
-
-enum TdError {
+typedef enum TdError_t {
 	eTD_NO_ERROR = 0x00,
 	eTD_ERROR = 0x1
-}; // </TdError>
+} TdError; // </TdError>
 
-enum TdTraceLevel{
+typedef enum TdTraceLevel_t {
 	eTD_LVL_VERBOSE = 0,
 	eTD_LVL_DEBUG = 1,
 	eTD_LVL_INFO = 2,
 	eTD_LVL_WARNING = 3,
 	eTD_LVL_ERROR = 4,
-}; // </TdTraceLevel>
+} TdTraceLevel; // </TdTraceLevel>
 
-enum TdColorType {
-	eTD_COLOR_BACKGROUND,
-	eTD_COLOR_FOREGROUND,
-}; // </TdColorType>
-
-enum TdTraceOutputId{
+typedef enum TdTraceOutputId_t {
 	eTD_OUTPUT_CONSOLE = 0x0,
 	eTD_OUTPUT_FILE = 0x1,
 	eTD_OUTPUT_USER = 0x2
-}; // </TdTraceOutputId>
+} TdTraceOutputId; // </TdTraceOutputId>
 
-enum TdFileOutputType{
-	eTD_FILE_PLAIN_TEXT,
-	eTD_FILE_HTML
-}; // </TdFileOutputType>
-
-/**
- * Color bitfields. Entire color related information can be incoded in a single niblet.
- */
-enum TdColor{
-	eTD_COLOR_RED,
-	eTD_COLOR_GREEN,
-	eTD_COLOR_BLUE,
-	eTD_COLOR_CYAN,
-	eTD_COLOR_MAGENTA,
-	eTD_COLOR_YELLOW,
-	eTD_COLOR_WHITE,
-	eTD_COLOR_BLACK,
-};
 
 /** User callback function. */
-typedef void (*td_callbackFcn)(const tdchar* tag, enum TdTraceLevel level, const tdchar* message);
+typedef void (*td_callbackFcn)(const tdchar* tag, TdTraceLevel level, const tdchar* message);
 
 /**
  * @brief Formats and sends the message to all enabled outputs (i.e. console, file and user).
@@ -100,7 +76,7 @@ typedef void (*td_callbackFcn)(const tdchar* tag, enum TdTraceLevel level, const
  * @param ...	Message format arguments.
  * @return - Returns eTD_NO_ERROR on success, eTD_ERROR otherwise.
  */
-enum TdError td_logMessage(const tdchar* tag, enum TdTraceLevel level, const tdchar* message, ...);
+TdError td_logMessage(const tdchar* tag, TdTraceLevel level, const tdchar* message, ...);
 
 /**
  * @brief Sets the user callback function.
@@ -130,8 +106,7 @@ void td_setFileOutput(FILE* output);
  *						eTD_OUTPUT_USER    - User callback output
  * @param level		Actual trace output level.
  */
-void td_setOutputLevel(enum TdTraceOutputId id, enum TdTraceLevel level);
-
+void td_setOutputLevel(TdTraceOutputId id, TdTraceLevel level);
 
 /**
  * @brief Enables or disables a single trace output.
@@ -139,16 +114,7 @@ void td_setOutputLevel(enum TdTraceOutputId id, enum TdTraceLevel level);
  * @param id		Trace output ID
  * @param enabled	1 to enable output, 0 otherwise
  */
-void td_setOutputEnabled(enum TdTraceOutputId id, int enabled);
-
-/**
- * @brief Changes file output format.
- * If the output file is already set, and 'type' param is HTML a HTML header will be written
- *
- * @param type	Can be either plain text or formatted HTML.
- */
-void td_setFileOutputType(enum TdFileOutputType type);
-
+void td_setOutputEnabled(TdTraceOutputId id, int enabled);
 
 /**
  * Basic log helper macros removing the need to call 'td_logMessage' directly.

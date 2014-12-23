@@ -1,15 +1,23 @@
-out=libtd.so
+library_name=libtd.so
 
-all:
-	gcc source/td/td.c -Iinclude -shared -fPIC -o $(out)
+example_name=example
+
+source_dir=./source/td
+
+include_dir=./include/td
+
+library:
+	gcc $(source_dir)/td.c -Werror -Iinclude -shared -fPIC -o $(library_name)
+	
+example:
+	gcc $(source_dir)/example.c -Werror -Iinclude -ltd -o $(example_name)
+	
+all: library example
 	
 clean:
-	rm -f $(out)
-	rm -f ./example
-
-example:
-	gcc source/td/example.c -Iinclude -o example -ltd
+	rm -f $(library_name)
+	rm -f $(example_name)
 
 install:
-	cp -r include/td /usr/include/
-	cp $(out) /usr/lib/
+	cp $(include_dir)/td.h /usr/include/
+	cp $(library_name) /usr/lib/
