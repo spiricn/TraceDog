@@ -16,8 +16,7 @@
 // * http://www.gnu.org/copyleft/gpl.html
 // */
 //
-////#define TD_UNICODE
-//
+
 #include "td/td.h"
 
 #undef TD_TRACE_TAG
@@ -25,19 +24,26 @@
 
 
 int main(){
+	// Create a console output
 	TdOutputHandle console = td_createConsoleOutput();
 
-	TdOutputHandle html = td_createFileOutput("/home/nikola/desktop/log.html", eTD_FMT_HTML);
+	// Create a formatted HTML file output
+	TdOutputHandle html = td_createFileOutput("log.html", eTD_FMT_HTML);
 
-	TdOutputHandle plain = td_createFileOutput("/home/nikola/desktop/log.txt", eTD_FMT_PLAIN_TEXT);
+	// Create a plain text output
+	TdOutputHandle plain = td_createFileOutput("log.txt", eTD_FMT_PLAIN_TEXT);
 
+	// Basic log macros
 	LOGV("Verbose LOG");
 	LOGD("Debug LOG");
 	LOGI("Info LOG");
 	LOGW("Warning LOG");
 	LOGE("Error LOG");
+
+	// Tracing macro
 	TRACED("Trace LOG");
 
+	// Destroy outputs
 	td_destroyOutput(console);
 	td_destroyOutput(html);
 	td_destroyOutput(plain);

@@ -1,11 +1,11 @@
 #ifndef CONSOLEOUTPUT_H_
 #define CONSOLEOUTPUT_H_
 
-#include <td/IOutput.h>
+#include <td/AOutput.h>
 
-class ConsoleOutput : public IOutput{
+class ConsoleOutput : public AOutput{
 public:
-	ConsoleOutput(TdOutputHandle handle);
+	ConsoleOutput();
 
 	TdError setColor(TdColor textColor, bool textBold, TdColor backgroundColor, bool backgroundBold);
 

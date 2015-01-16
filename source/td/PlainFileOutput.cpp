@@ -3,7 +3,7 @@
 
 #include <stdio.h>
 
-PlainFileOutput::PlainFileOutput(const char* path, TdOutputHandle handle) : mFile(NULL), IOutput(handle){
+PlainFileOutput::PlainFileOutput(const char* path) : mFile(NULL) {
 	mFile = fopen(path, "wb");
 }
 

@@ -1,6 +1,6 @@
 #include "td/HTMLFileOutput.h"
 
-HTMLFileOutput::HTMLFileOutput(const char* path, TdOutputHandle handle) : IOutput(handle), mFile(NULL){
+HTMLFileOutput::HTMLFileOutput(const char* path) : mFile(NULL){
 	mFile = fopen(path, "wb");
 
 	// Header

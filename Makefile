@@ -13,6 +13,8 @@ library:
 	$(source_dir)/ConsoleOutput.cpp \
 	$(source_dir)/PlainFileOutput.cpp \
 	$(source_dir)/Td.cpp \
+	$(source_dir)/TdImpl.cpp \
+	$(source_dir)/AOutput.cpp \
 	$(source_dir)/HTMLFileOutput.cpp \
 	-Werror -Iinclude -shared -fPIC -o $(library_name)
 	

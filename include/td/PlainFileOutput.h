@@ -1,11 +1,11 @@
 #ifndef PLAINFILEOUTPUT_H
 #define PLAINFILEOUTPUT_H
 
-#include <td/IOutput.h>
+#include <td/AOutput.h>
 
-class PlainFileOutput : public IOutput{
+class PlainFileOutput : public AOutput{
 public:
-	PlainFileOutput(const char* path, TdOutputHandle handle);
+	PlainFileOutput(const char* path);
 
 	~PlainFileOutput();
 

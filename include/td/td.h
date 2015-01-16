@@ -36,7 +36,7 @@ extern "C"{
 
 #define TD_VERSION "1.0.0"
 
-#define TD_INVALID_OUTPUT_HANDLE -1
+#define TD_INVALID_OUTPUT_HANDLE NULL
 
 #define TD_WIDEN2(x)  L ## x
 #define TD_WIDEN(x) TD_WIDEN2(x)
@@ -124,7 +124,7 @@ typedef enum TdFileFormat_t{
 /** User callback function. */
 typedef void (*td_callbackFcn)(const tdchar* tag, TdTraceLevel level, const tdchar* message, void* userData);
 
-typedef int TdOutputHandle;
+typedef void* TdOutputHandle;
 
 /*============================================================================
  *   FUNCTION DECLARATIONS

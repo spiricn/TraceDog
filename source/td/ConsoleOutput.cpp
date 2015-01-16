@@ -3,7 +3,7 @@
 
 #include <stdio.h>
 
-ConsoleOutput::ConsoleOutput(TdOutputHandle handle) : IOutput(handle){
+ConsoleOutput::ConsoleOutput(){
 }
 
 TdError ConsoleOutput::setColor(TdColor textColor, bool textBold, TdColor backgroundColor, bool backgroundBold){

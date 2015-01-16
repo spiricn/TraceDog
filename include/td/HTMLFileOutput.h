@@ -1,12 +1,13 @@
 #ifndef HTMLFILEOUTPUT_H
 #define HTMLFILEOUTPUT_H
 
-#include "td/IOutput.h"
+#include "td/AOutput.h"
+
 #include <string>
 
-class HTMLFileOutput : public IOutput {
+class HTMLFileOutput : public AOutput {
 public:
-	HTMLFileOutput(const char* path, TdOutputHandle handle);
+	HTMLFileOutput(const char* path);
 
 	~HTMLFileOutput();
 
