@@ -7,10 +7,17 @@ source_dir=./source/td
 include_dir=./include/td
 
 library:
-	gcc $(source_dir)/td.c -Werror -Iinclude -shared -fPIC -o $(library_name)
+	g++ \
+	$(source_dir)/IOSAL.cpp \
+	$(source_dir)/LinuxOSAL.cpp \
+	$(source_dir)/ConsoleOutput.cpp \
+	$(source_dir)/PlainFileOutput.cpp \
+	$(source_dir)/Td.cpp \
+	$(source_dir)/HTMLFileOutput.cpp \
+	-Werror -Iinclude -shared -fPIC -o $(library_name)
 	
 example:
-	gcc $(source_dir)/example.c -Werror -Iinclude -ltd -o $(example_name)
+	g++ $(source_dir)/example.cpp -Werror -Iinclude -ltd -o $(example_name) -L.
 	
 all: library example
 	
@@ -21,3 +28,9 @@ clean:
 install:
 	cp $(include_dir)/td.h /usr/include/
 	cp $(library_name) /usr/lib/
+
+	
+uninstall:
+	rm /usr/include/td.h
+	rm /usr/lib/$(library_name)
+	

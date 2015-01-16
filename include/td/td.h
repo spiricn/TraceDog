@@ -19,6 +19,10 @@
 #ifndef TDTD_H
 #define TDTD_H
 
+/*============================================================================
+ *   INCLUDES
+ *===========================================================================*/
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -26,9 +30,14 @@
 extern "C"{
 #endif
 
-/**
- * Helper macros used to create a wide versions of __FILE__ and __FUNCTION__
- */
+/*============================================================================
+ *   Macro definitions
+ *===========================================================================*/
+
+#define TD_VERSION "1.0.0"
+
+#define TD_INVALID_OUTPUT_HANDLE -1
+
 #define TD_WIDEN2(x)  L ## x
 #define TD_WIDEN(x) TD_WIDEN2(x)
 
@@ -43,78 +52,6 @@ extern "C"{
 	#define TD_FILE __FILE__
 	#define TD_FUNCTION __FUNCTION__
 #endif
-
-typedef enum TdError_t {
-	eTD_NO_ERROR = 0x00,
-	eTD_ERROR = 0x1
-} TdError; // </TdError>
-
-typedef enum TdTraceLevel_t {
-	eTD_LVL_VERBOSE = 0,
-	eTD_LVL_DEBUG = 1,
-	eTD_LVL_INFO = 2,
-	eTD_LVL_WARNING = 3,
-	eTD_LVL_ERROR = 4,
-} TdTraceLevel; // </TdTraceLevel>
-
-typedef enum TdTraceOutputId_t {
-	eTD_OUTPUT_CONSOLE = 0x0,
-	eTD_OUTPUT_FILE = 0x1,
-	eTD_OUTPUT_USER = 0x2
-} TdTraceOutputId; // </TdTraceOutputId>
-
-
-/** User callback function. */
-typedef void (*td_callbackFcn)(const tdchar* tag, TdTraceLevel level, const tdchar* message);
-
-/**
- * @brief Formats and sends the message to all enabled outputs (i.e. console, file and user).
- *
- * @param tag	Module tag string.
- * @param level Message trace level, used to filter messages via td_setOutputLevel.
- * @param fmt	Message format.
- * @param ...	Message format arguments.
- * @return - Returns eTD_NO_ERROR on success, eTD_ERROR otherwise.
- */
-TdError td_logMessage(const tdchar* tag, TdTraceLevel level, const tdchar* message, ...);
-
-/**
- * @brief Sets the user callback function.
- * User callback function is invoked by 'td_logMessage' calls if the level is appropriate
- * and user ouput is enabled via 'td_setOutputEnabled' with eTD_OUTPUT_USER as ID.
- *
- * @param fnc	Callback function pointer
- */
-void td_setCallbackFnc(td_callbackFcn fnc);
-
-/**
- * Sets file destination for eTD_OUTPUT_FILE trace output.
- *
- * If the file output type is HTML and 'output' param is NULL a HTML trailer shall be written.
- *
- * @param output	File output pointer, can be NULL which disables this trace output
- */
-void td_setFileOutput(FILE* output);
-
-/**
- * @brief Sets output level for the given output ID.
- * If a message trace level is greater than the output level the message will be ignored.
- *
- * @param id		Trace output id, can be one of the following:
- *						eTD_OUTPUT_CONSOLE - STDOUT console output. 
- *						eTD_OUTPUT_FILE    - File output.
- *						eTD_OUTPUT_USER    - User callback output
- * @param level		Actual trace output level.
- */
-void td_setOutputLevel(TdTraceOutputId id, TdTraceLevel level);
-
-/**
- * @brief Enables or disables a single trace output.
- *
- * @param id		Trace output ID
- * @param enabled	1 to enable output, 0 otherwise
- */
-void td_setOutputEnabled(TdTraceOutputId id, int enabled);
 
 /**
  * Basic log helper macros removing the need to call 'td_logMessage' directly.
@@ -160,6 +97,50 @@ void td_setOutputEnabled(TdTraceOutputId id, int enabled);
 #ifndef TD_TRACE_TAG
 	#define TD_TRACE_TAG ("")
 #endif
+
+/*============================================================================
+ *   TYPE DEFINITIONS
+ *===========================================================================*/
+
+typedef enum TdError_t {
+	eTD_NO_ERROR = 0x00,
+	eTD_ERROR = 0x1
+} TdError;
+
+typedef enum TdTraceLevel_t {
+	eTD_LVL_OFF = -1,
+	eTD_LVL_VERBOSE = 0,
+	eTD_LVL_DEBUG = 1,
+	eTD_LVL_INFO = 2,
+	eTD_LVL_WARNING = 3,
+	eTD_LVL_ERROR = 4,
+} TdTraceLevel;
+
+typedef enum TdFileFormat_t{
+	eTD_FMT_PLAIN_TEXT,
+	eTD_FMT_HTML
+} TdFileFormat;
+
+/** User callback function. */
+typedef void (*td_callbackFcn)(const tdchar* tag, TdTraceLevel level, const tdchar* message, void* userData);
+
+typedef int TdOutputHandle;
+
+/*============================================================================
+ *   FUNCTION DECLARATIONS
+ *===========================================================================*/
+
+TdError td_logMessage(const tdchar* tag, TdTraceLevel level, const tdchar* message, ...);
+
+TdOutputHandle td_createFileOutput(const tdchar* path, TdFileFormat fileFormat);
+
+TdOutputHandle td_createConsoleOutput();
+
+TdError td_destroyOutput(TdOutputHandle handle);
+
+TdError td_setCallbackFnc(td_callbackFcn fnc, void* userData);
+
+TdError td_setOutputLevel(TdOutputHandle handle, TdTraceLevel level);
 
 #ifdef __cplusplus
 } // </extern "C"{>
