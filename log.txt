@@ -1,6 +1,0 @@
-[17:39:31  V  ModuleTag]: Verbose LOG
-[17:39:31  D  ModuleTag]: Debug LOG
-[17:39:31  I  ModuleTag]: Info LOG
-[17:39:31  W  ModuleTag]: Warning LOG
-[17:39:31  E  ModuleTag]: Error LOG
-[17:39:31  D  ModuleTag]: {./source/td/example.cpp - main @ 44} Trace LOG
