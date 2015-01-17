@@ -22,12 +22,23 @@
 #define ANSI_CLR_BG_WHITE "47"
 #define ANSI_CLR_BG_BLACK "40"
 
+LinuxOSAL* LinuxOSAL::sInstance = NULL;
+
 LinuxOSAL::LinuxOSAL(){
 	pthread_mutex_init(&mMutex, NULL);
 }
 
 LinuxOSAL::~LinuxOSAL(){
 	pthread_mutex_destroy(&mMutex);
+}
+
+
+LinuxOSAL* LinuxOSAL::getInstance(){
+	if (!sInstance){
+		sInstance = new LinuxOSAL;
+	}
+
+	return sInstance;
 }
 
 TdError LinuxOSAL::lock(){

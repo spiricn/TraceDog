@@ -48,6 +48,9 @@ int main(){
 	td_destroyOutput(html);
 	td_destroyOutput(plain);
 
+
+	system("pause");
+
 	return 0;
 }
 

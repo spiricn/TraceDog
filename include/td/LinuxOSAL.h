@@ -19,11 +19,16 @@ public:
 
 	TdError resetConsoleColor();
 
+	static LinuxOSAL* getInstance();
+
 private:
 	TdError setConsoleColor(TdColor color, TdColorType type, bool intense);
 
 private:
 	pthread_mutex_t mMutex;
+
+private:
+	LinuxOSAL* sInstance;
 };
 
 #endif

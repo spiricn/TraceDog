@@ -72,6 +72,8 @@ std::string convertColor(TdColor color, bool intense){
 
 	case eTD_COLOR_BLACK:
 		return intense ? "rgb(0, 0, 0)" : "rgb(0, 0, 0)";
+	default:
+		return "rgb(255, 255, 255)";
 	}
 }
 
