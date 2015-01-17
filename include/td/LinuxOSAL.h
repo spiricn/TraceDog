@@ -1,7 +1,7 @@
-#ifndef TDLINUX_H
-#define TDLINUX_H
+#ifndef TDLINUXOSAL_H
+#define TDLINUXOSAL_H
 
-#include <td/IOSAL.h>
+#include "td/IOSAL.h"
 
 #include <pthread.h>
 
@@ -28,7 +28,8 @@ private:
 	pthread_mutex_t mMutex;
 
 private:
-	LinuxOSAL* sInstance;
+	static LinuxOSAL* sInstance;
 };
 
-#endif
+#endif /* TDLINUXOSAL_H */
+

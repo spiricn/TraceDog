@@ -1,5 +1,19 @@
 #include "td/AOutput.h"
 
+AOutput::AOutput() : mLevel(eTD_LVL_VERBOSE){
+}
+
+AOutput::~AOutput(){
+}
+
+void AOutput::setLevel(TdTraceLevel level){
+	mLevel = level;
+}
+
+TdTraceLevel AOutput::getLevel() const{
+	return mLevel;
+}
+
 void AOutput::onMessageStart(){
 }
 

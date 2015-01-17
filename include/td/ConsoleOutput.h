@@ -1,5 +1,5 @@
-#ifndef CONSOLEOUTPUT_H_
-#define CONSOLEOUTPUT_H_
+#ifndef TDCONSOLEOUTPUT_H
+#define TDCONSOLEOUTPUT_H
 
 #include <td/AOutput.h>
 
@@ -14,4 +14,5 @@ public:
 	TdError resetColor();
 };
 
-#endif /* CONSOLEOUTPUT_H_ */
+#endif /* TDCONSOLEOUTPUT_H */
+

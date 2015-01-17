@@ -1,7 +1,7 @@
-#ifndef PLAINFILEOUTPUT_H
-#define PLAINFILEOUTPUT_H
+#ifndef TDPLAINFILEOUTPUT_H
+#define TDPLAINFILEOUTPUT_H
 
-#include <td/AOutput.h>
+#include "td/AOutput.h"
 
 class PlainFileOutput : public AOutput{
 public:
@@ -19,4 +19,4 @@ private:
 	FILE* mFile;
 };
 
-#endif /* CONSOLEOUTPUT_H_ */
+#endif /* TDPLAINFILEOUTPUT_H */

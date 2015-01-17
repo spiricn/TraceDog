@@ -22,7 +22,9 @@ TdError TdImpl::logMessage(const tdchar* tag, TdTraceLevel level, const tdchar* 
 
 		// Handle other outputs
 		for(OutputList::iterator iter=mOutputs.begin(); iter!=mOutputs.end(); iter++){
-			logMessage(tag, linePtr, level, *iter);
+			if (static_cast<int>(level) >= static_cast<int>((*iter)->getLevel())){
+				logMessage(tag, linePtr, level, *iter);
+			}
 		}
 
 		// Next line
@@ -99,6 +101,18 @@ TdError TdImpl::setCallbackFnc(td_callbackFcn fnc, void* userData){
 TdError TdImpl::setOutputLevel(TdOutputHandle handle, TdTraceLevel level){
 	IOSAL::getInstance()->lock();
 
+	AOutput* output = static_cast<AOutput*>(handle);
+
+	if (output == NULL){
+		for(OutputList::iterator iter = mOutputs.begin(); iter!=mOutputs.end(); iter++){
+			(*iter)->setLevel(level);
+		}
+	}
+	else{
+		output->setLevel(level);
+	}
+	
+
 	IOSAL::getInstance()->unlock();
 
 	return eTD_NO_ERROR;
@@ -116,7 +130,9 @@ TdOutputHandle TdImpl::createFileOutput(const tdchar* path, TdFileFormat fileFor
 		output = new HTMLFileOutput(path);
 	}
 	else{
-		return TD_INVALID_OUTPUT_HANDLE;
+		IOSAL::getInstance()->unlock();
+
+		return NULL;
 	}
 
 	attachOutput(output);

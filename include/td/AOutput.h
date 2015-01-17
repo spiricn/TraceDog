@@ -1,14 +1,21 @@
-#ifndef IOUTPUT_H_
-#define IOUTPUT_H_
+#ifndef TDAOUTPUT_H
+#define TDAOUTPUT_H
 
-#include <td/td.h>
-#include <td/TdPriv.h>
-#include <td/Utils.h>
+#include "td/td.h"
+#include "td/TdPriv.h"
+#include "td/Utils.h"
 
 class AOutput{
 public:
-	virtual ~AOutput(){
-	}
+	AOutput();
+
+	virtual ~AOutput();
+
+	virtual TdError setColor(TdColor textColor, bool textBold, TdColor backgroundColor, bool backgroundBold) = 0;
+
+	virtual TdError resetColor() = 0;
+
+	virtual void write(const tdchar* string) = 0;
 
 	virtual void onMessageStart();
 
@@ -16,12 +23,13 @@ public:
 
 	void writeFmt(const tdchar* format, ...);
 
-	virtual TdError setColor(TdColor textColor, bool textBold, TdColor backgroundColor, bool backgroundBold) = 0;
+	void setLevel(TdTraceLevel level);
 
-	virtual TdError resetColor() = 0;
+	TdTraceLevel getLevel() const;
 
-	virtual void write(const tdchar* string) = 0;
+private:
+	TdTraceLevel mLevel;
 };
 
+#endif /* TDAOUTPUT_H */
 
-#endif /* IOUTPUT_H_ */

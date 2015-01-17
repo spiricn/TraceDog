@@ -1,5 +1,5 @@
-#ifndef FORMATTER_H_
-#define FORMATTER_H_
+#ifndef TDFORMATTER_H
+#define TDFORMATTER_H
 
 #include "TdPriv.h"
 
@@ -24,4 +24,5 @@ public:
 	}
 };
 
-#endif /* FORMATTER_H_ */
+#endif /* TDFORMATTER_H */
+

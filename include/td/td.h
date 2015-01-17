@@ -26,17 +26,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+/*============================================================================
+ *   DEFINES
+ *===========================================================================*/
+
 #ifdef __cplusplus
 extern "C"{
 #endif
 
-/*============================================================================
- *   Macro definitions
- *===========================================================================*/
-
 #define TD_VERSION "1.0.0"
-
-#define TD_INVALID_OUTPUT_HANDLE NULL
 
 #define TD_WIDEN2(x)  L ## x
 #define TD_WIDEN(x) TD_WIDEN2(x)
@@ -73,7 +71,7 @@ extern "C"{
 /**
  * Tracer macros, extended LOGx macros with file, function and line information.
  */
-#define TD_TRACE_INFO  TD_TEXT("{%s - %s @ %d} ")
+#define TD_TRACE_INFO  TD_TEXT("[ %s - %s @ %d ]: ")
 
 #define TRACEV(fmt, ...) LOGV(TD_TRACE_INFO fmt, TD_FILE, TD_FUNCTION, __LINE__, ## __VA_ARGS__)
 #define TRACED(fmt, ...) LOGD(TD_TRACE_INFO fmt, TD_FILE, TD_FUNCTION, __LINE__, ## __VA_ARGS__)
@@ -85,7 +83,6 @@ extern "C"{
  * Assert related macros
  */
 #define TD_ASSERT(val, fmt, ...) do{ if(!(val)){ TRACEE(TD_TEXT("Assertion failed: \"") fmt TD_TEXT("\""), ##__VA_ARGS__); abort();} }while(0)
-
 #define TD_ASSERT_LT(val1, val2, fmt, ...) TD_ASSERT(val1 < val2, fmt, __VA_ARGS__)
 #define TD_ASSERT_LTE(val1, val2, fmt, ...) TD_ASSERT(val1 <= val2, fmt, __VA_ARGS__)
 #define TD_ASSERT_GT(val1, val2, fmt, ...) TD_ASSERT(val1 > val2, fmt, __VA_ARGS__)
@@ -93,7 +90,9 @@ extern "C"{
 #define TD_ASSERT_NE(val1, val2, fmt, ...) TD_ASSERT(val1 != val2, fmt, __VA_ARGS__)
 #define TD_ASSERT_E(val1, val2, fmt, ...) TD_ASSERT(val1 == val2, fmt, __VA_ARGS__)
 
-/** Default trace tag */
+/**
+ * Default trace tag
+ */
 #ifndef TD_TRACE_TAG
 	#define TD_TRACE_TAG ("")
 #endif
@@ -108,12 +107,11 @@ typedef enum TdError_t {
 } TdError;
 
 typedef enum TdTraceLevel_t {
-	eTD_LVL_OFF = -1,
-	eTD_LVL_VERBOSE = 0,
-	eTD_LVL_DEBUG = 1,
-	eTD_LVL_INFO = 2,
-	eTD_LVL_WARNING = 3,
-	eTD_LVL_ERROR = 4,
+	eTD_LVL_VERBOSE,
+	eTD_LVL_DEBUG,
+	eTD_LVL_INFO,
+	eTD_LVL_WARNING ,
+	eTD_LVL_ERROR,
 } TdTraceLevel;
 
 typedef enum TdFileFormat_t{
@@ -124,6 +122,7 @@ typedef enum TdFileFormat_t{
 /** User callback function. */
 typedef void (*td_callbackFcn)(const tdchar* tag, TdTraceLevel level, const tdchar* message, void* userData);
 
+/** Handle used to reference a single output */
 typedef void* TdOutputHandle;
 
 /*============================================================================

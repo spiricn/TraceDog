@@ -1,5 +1,5 @@
-#ifndef HTMLFILEOUTPUT_H
-#define HTMLFILEOUTPUT_H
+#ifndef TDHTMLFILEOUTPUT_H
+#define TDHTMLFILEOUTPUT_H
 
 #include "td/AOutput.h"
 
