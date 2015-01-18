@@ -20,6 +20,8 @@ class TdImpl{
 public:
 	TdImpl();
 
+	~TdImpl();
+
 	TdError logMessage(const tdchar* tag, TdTraceLevel level, const tdchar* format, va_list args);
 
 	TdError logMessage(const tdchar* tag, const tdchar* message, TdTraceLevel level, AOutput* output);
@@ -33,6 +35,8 @@ public:
 	TdOutputHandle createConsoleOutput();
 
 	TdError destroyOutput(TdOutputHandle handle);
+
+	TdOutputHandle getDefaultOutput() const;
 
 	static TdImpl* getInstance();
 
@@ -49,6 +53,8 @@ private:
 	} mCallback;
 
 	OutputList mOutputs;
+	IOSAL* mOsal;
+	TdOutputHandle mDefaultOutput;
 
 private:
 	static TdImpl* sInstance;

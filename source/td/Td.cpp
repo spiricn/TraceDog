@@ -31,3 +31,8 @@ TdOutputHandle td_createConsoleOutput(){
 TdError td_destroyOutput(TdOutputHandle handle){
 	return TdImpl::getInstance()->destroyOutput(handle);
 }
+
+TdOutputHandle td_getDefaultOutput(){
+	return TdImpl::getInstance()->getDefaultOutput();
+
+}

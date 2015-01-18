@@ -3,12 +3,22 @@
 TdImpl* TdImpl::sInstance = NULL;
 
 TdImpl::TdImpl(){
+	mOsal = IOSAL::getInstance();
+
 	mCallback.fnc = NULL;
 	mCallback.data = NULL;
+
+	mDefaultOutput = createConsoleOutput();
+}
+
+TdImpl::~TdImpl(){
+	if(mDefaultOutput){
+		destroyOutput(mDefaultOutput);
+	}
 }
 
 TdError TdImpl::logMessage(const tdchar* tag, TdTraceLevel level, const tdchar* format, va_list args){
-	IOSAL::getInstance()->lock();
+	mOsal->lock();
 
 	tdchar* message = td_format(format, args);
 
@@ -33,7 +43,7 @@ TdError TdImpl::logMessage(const tdchar* tag, TdTraceLevel level, const tdchar* 
 
 	delete[] message;
 
-	IOSAL::getInstance()->unlock();
+	mOsal->unlock();
 
 	return eTD_NO_ERROR;
 }
@@ -88,18 +98,18 @@ TdError TdImpl::logMessage(const tdchar* tag, const tdchar* message, TdTraceLeve
 
 
 TdError TdImpl::setCallbackFnc(td_callbackFcn fnc, void* userData){
-	IOSAL::getInstance()->lock();
+	mOsal->lock();
 
 	mCallback.fnc = fnc;
 	mCallback.data = userData;
 
-	IOSAL::getInstance()->unlock();
+	mOsal->unlock();
 
 	return eTD_NO_ERROR;
 }
 
 TdError TdImpl::setOutputLevel(TdOutputHandle handle, TdTraceLevel level){
-	IOSAL::getInstance()->lock();
+	mOsal->lock();
 
 	AOutput* output = static_cast<AOutput*>(handle);
 
@@ -113,13 +123,13 @@ TdError TdImpl::setOutputLevel(TdOutputHandle handle, TdTraceLevel level){
 	}
 	
 
-	IOSAL::getInstance()->unlock();
+	mOsal->unlock();
 
 	return eTD_NO_ERROR;
 }
 
 TdOutputHandle TdImpl::createFileOutput(const tdchar* path, TdFileFormat fileFormat){
-	IOSAL::getInstance()->lock();
+	mOsal->lock();
 
 	AOutput* output = NULL;
 
@@ -130,34 +140,38 @@ TdOutputHandle TdImpl::createFileOutput(const tdchar* path, TdFileFormat fileFor
 		output = new HTMLFileOutput(path);
 	}
 	else{
-		IOSAL::getInstance()->unlock();
+		mOsal->unlock();
 
 		return NULL;
 	}
 
 	attachOutput(output);
 
-	IOSAL::getInstance()->unlock();
+	mOsal->unlock();
 
 	return static_cast<TdOutputHandle>(output);
 }
 
 TdOutputHandle TdImpl::createConsoleOutput(){
-	IOSAL::getInstance()->lock();
+	mOsal->lock();
 
 	AOutput* output = new ConsoleOutput();
 
 	attachOutput(output);
 
-	IOSAL::getInstance()->unlock();
+	mOsal->unlock();
 
 	return static_cast<TdOutputHandle>(output);
 }
 
 TdError TdImpl::destroyOutput(TdOutputHandle handle){
-	IOSAL::getInstance()->lock();
+	mOsal->lock();
 
 	AOutput* output = static_cast<AOutput*>(handle);
+
+	if(mDefaultOutput == output){
+		mDefaultOutput = NULL;
+	}
 
 	for(OutputList::iterator iter=mOutputs.begin(); iter!=mOutputs.end(); iter++){
 		if(*iter == output){
@@ -168,11 +182,10 @@ TdError TdImpl::destroyOutput(TdOutputHandle handle){
 
 	delete output;
 
-	IOSAL::getInstance()->unlock();
+	mOsal->unlock();
 
 	return eTD_NO_ERROR;
 }
-
 
  TdImpl* TdImpl::getInstance(){
 	if(!sInstance){
@@ -181,10 +194,15 @@ TdError TdImpl::destroyOutput(TdOutputHandle handle){
 
 	return sInstance;
 }
+
 void TdImpl::attachOutput(AOutput* output){
-	output->onMessageStart();
-
 	mOutputs.push_back(output);
+}
 
-	output->onMessageEnd();
+TdOutputHandle TdImpl::getDefaultOutput() const{
+	mOsal->lock();
+
+	return mDefaultOutput;
+
+	mOsal->unlock();
 }
