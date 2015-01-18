@@ -1,3 +1,4 @@
-libtd.ilk
-libtd.pdb
-libtd.dll
+# Ignore everything in this directory
+*
+# Except this file
+!.gitignore

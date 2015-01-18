@@ -19,29 +19,39 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\source\td\AOutput.cpp" />
-    <ClCompile Include="..\..\source\td\ConsoleOutput.cpp" />
-    <ClCompile Include="..\..\source\td\example.cpp" />
-    <ClCompile Include="..\..\source\td\HTMLFileOutput.cpp" />
-    <ClCompile Include="..\..\source\td\IOSAL.cpp" />
-    <ClCompile Include="..\..\source\td\PlainFileOutput.cpp" />
-    <ClCompile Include="..\..\source\td\Td.cpp" />
-    <ClCompile Include="..\..\source\td\TdImpl.cpp" />
-    <ClCompile Include="..\..\source\td\Win32OSAL.cpp" />
+    <ClCompile Include="..\..\..\source\td\AOutput.cpp" />
+    <ClCompile Include="..\..\..\source\td\ConsoleOutput.cpp" />
+    <ClCompile Include="..\..\..\source\td\HTMLFileOutput.cpp" />
+    <ClCompile Include="..\..\..\source\td\IOSAL.cpp" />
+    <ClCompile Include="..\..\..\source\td\LinuxOSAL.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Library|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Example|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\td\PlainFileOutput.cpp" />
+    <ClCompile Include="..\..\..\source\td\Td.cpp" />
+    <ClCompile Include="..\..\..\source\td\TdImpl.cpp" />
+    <ClCompile Include="..\..\..\source\td\Win32OSAL.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\include\td\AOutput.h" />
-    <ClInclude Include="..\..\include\td\ConsoleOutput.h" />
-    <ClInclude Include="..\..\include\td\Formatter.h" />
-    <ClInclude Include="..\..\include\td\HTMLFileOutput.h" />
-    <ClInclude Include="..\..\include\td\IOSAL.h" />
-    <ClInclude Include="..\..\include\td\LinuxOSAL.h" />
-    <ClInclude Include="..\..\include\td\PlainFileOutput.h" />
-    <ClInclude Include="..\..\include\td\td.h" />
-    <ClInclude Include="..\..\include\td\TdImpl.h" />
-    <ClInclude Include="..\..\include\td\TdPriv.h" />
-    <ClInclude Include="..\..\include\td\Utils.h" />
-    <ClInclude Include="..\..\include\td\Win32OSAL.h" />
+    <ClInclude Include="..\..\..\include\td\AOutput.h" />
+    <ClInclude Include="..\..\..\include\td\ConsoleOutput.h" />
+    <ClInclude Include="..\..\..\include\td\Formatter.h" />
+    <ClInclude Include="..\..\..\include\td\HTMLFileOutput.h" />
+    <ClInclude Include="..\..\..\include\td\IOSAL.h" />
+    <ClInclude Include="..\..\..\include\td\LinuxOSAL.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Library|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Example|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\td\PlainFileOutput.h" />
+    <ClInclude Include="..\..\..\include\td\td.h" />
+    <ClInclude Include="..\..\..\include\td\TdImpl.h" />
+    <ClInclude Include="..\..\..\include\td\TdPriv.h" />
+    <ClInclude Include="..\..\..\include\td\Utils.h" />
+    <ClInclude Include="..\..\..\include\td\Win32OSAL.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{D803EDAD-E565-4A71-964E-27B41174B943}</ProjectGuid>
@@ -49,27 +59,27 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v120</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v120</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Example|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v120</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Library|Win32'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v120</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>

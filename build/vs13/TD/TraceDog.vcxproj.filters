@@ -15,69 +15,69 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\source\td\AOutput.cpp">
+    <ClCompile Include="..\..\..\source\td\AOutput.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\td\ConsoleOutput.cpp">
+    <ClCompile Include="..\..\..\source\td\ConsoleOutput.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\td\example.cpp">
+    <ClCompile Include="..\..\..\source\td\HTMLFileOutput.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\td\HTMLFileOutput.cpp">
+    <ClCompile Include="..\..\..\source\td\IOSAL.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\td\IOSAL.cpp">
+    <ClCompile Include="..\..\..\source\td\LinuxOSAL.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\td\PlainFileOutput.cpp">
+    <ClCompile Include="..\..\..\source\td\PlainFileOutput.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\td\Td.cpp">
+    <ClCompile Include="..\..\..\source\td\Td.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\td\TdImpl.cpp">
+    <ClCompile Include="..\..\..\source\td\TdImpl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\td\Win32OSAL.cpp">
+    <ClCompile Include="..\..\..\source\td\Win32OSAL.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\include\td\AOutput.h">
+    <ClInclude Include="..\..\..\include\td\AOutput.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\td\ConsoleOutput.h">
+    <ClInclude Include="..\..\..\include\td\ConsoleOutput.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\td\Formatter.h">
+    <ClInclude Include="..\..\..\include\td\Formatter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\td\HTMLFileOutput.h">
+    <ClInclude Include="..\..\..\include\td\HTMLFileOutput.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\td\IOSAL.h">
+    <ClInclude Include="..\..\..\include\td\IOSAL.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\td\LinuxOSAL.h">
+    <ClInclude Include="..\..\..\include\td\LinuxOSAL.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\td\PlainFileOutput.h">
+    <ClInclude Include="..\..\..\include\td\PlainFileOutput.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\td\td.h">
+    <ClInclude Include="..\..\..\include\td\td.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\td\TdImpl.h">
+    <ClInclude Include="..\..\..\include\td\TdImpl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\td\TdPriv.h">
+    <ClInclude Include="..\..\..\include\td\TdPriv.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\td\Utils.h">
+    <ClInclude Include="..\..\..\include\td\Utils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\td\Win32OSAL.h">
+    <ClInclude Include="..\..\..\include\td\Win32OSAL.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

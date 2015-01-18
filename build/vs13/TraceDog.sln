@@ -3,16 +3,35 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.30723.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TraceDog", "TraceDog.vcxproj", "{D803EDAD-E565-4A71-964E-27B41174B943}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TDExamples", "TDExamples\TDExamples.vcxproj", "{E3D15EE7-F730-4EAC-8C69-BA592BBFFB75}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D803EDAD-E565-4A71-964E-27B41174B943} = {D803EDAD-E565-4A71-964E-27B41174B943}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TraceDog", "TD\TraceDog.vcxproj", "{D803EDAD-E565-4A71-964E-27B41174B943}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
+		Example|Win32 = Example|Win32
+		Library|Win32 = Library|Win32
 		Release|Win32 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E3D15EE7-F730-4EAC-8C69-BA592BBFFB75}.Debug|Win32.ActiveCfg = Debug|Win32
+		{E3D15EE7-F730-4EAC-8C69-BA592BBFFB75}.Debug|Win32.Build.0 = Debug|Win32
+		{E3D15EE7-F730-4EAC-8C69-BA592BBFFB75}.Example|Win32.ActiveCfg = Release|Win32
+		{E3D15EE7-F730-4EAC-8C69-BA592BBFFB75}.Example|Win32.Build.0 = Release|Win32
+		{E3D15EE7-F730-4EAC-8C69-BA592BBFFB75}.Library|Win32.ActiveCfg = Release|Win32
+		{E3D15EE7-F730-4EAC-8C69-BA592BBFFB75}.Library|Win32.Build.0 = Release|Win32
+		{E3D15EE7-F730-4EAC-8C69-BA592BBFFB75}.Release|Win32.ActiveCfg = Release|Win32
+		{E3D15EE7-F730-4EAC-8C69-BA592BBFFB75}.Release|Win32.Build.0 = Release|Win32
 		{D803EDAD-E565-4A71-964E-27B41174B943}.Debug|Win32.ActiveCfg = Debug|Win32
 		{D803EDAD-E565-4A71-964E-27B41174B943}.Debug|Win32.Build.0 = Debug|Win32
+		{D803EDAD-E565-4A71-964E-27B41174B943}.Example|Win32.ActiveCfg = Example|Win32
+		{D803EDAD-E565-4A71-964E-27B41174B943}.Example|Win32.Build.0 = Example|Win32
+		{D803EDAD-E565-4A71-964E-27B41174B943}.Library|Win32.ActiveCfg = Library|Win32
+		{D803EDAD-E565-4A71-964E-27B41174B943}.Library|Win32.Build.0 = Library|Win32
 		{D803EDAD-E565-4A71-964E-27B41174B943}.Release|Win32.ActiveCfg = Release|Win32
 		{D803EDAD-E565-4A71-964E-27B41174B943}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
