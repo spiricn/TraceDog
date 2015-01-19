@@ -10,16 +10,16 @@
 
 inline void td_getCurrentTime(const tdchar* format, tdchar* result){
 	time_t rawTime;
-	struct tm timeInfo;
+	struct tm* timeInfo;
 
 	time(&rawTime);
 
 
-	localtime_s(&timeInfo, &rawTime);
+	timeInfo = localtime(&rawTime);
 
 	char bfr[128];
 
-	strftime(bfr, 128, format, &timeInfo);
+	strftime(bfr, 128, format, timeInfo);
 #ifdef TD_UNICODE
 	mbstowcs(result, bfr, 128);
 #else

@@ -1,3 +1,5 @@
+#if defined(_WIN32)
+
 #include <td/Win32OSAL.h>
 
 #define	WIN32_COLOR_RED	( 0x04 )
@@ -133,3 +135,6 @@ TdError Win32OSAL::resetConsoleColor(){
 
 	return SetConsoleTextAttribute(stdoutHandle, mDefaultAttribs) ? eTD_NO_ERROR : eTD_ERROR;
 }
+
+#endif /* _WIN32 */
+
