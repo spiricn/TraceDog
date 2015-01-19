@@ -1,0 +1,5 @@
+install:
+	mkdir -p /usr/include/td/
+	cp ./../../../include/td/td.h /usr/include/td/
+	cp ./../../../lib/libtd.so /usr/lib/
+
